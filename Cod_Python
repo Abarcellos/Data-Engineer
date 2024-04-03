@@ -1,0 +1,21 @@
+(OBS). Recomendo colocar cada bloco de codico em um note separada para auxiliar o entendimento a cada retorno 
+
+import pandas as pd                                                 #  Biblioteca de recursos para auxiliar a leituda das tabelas
+from unicodedata import normalize                                   # configurações para formatação dos caracteres 
+url = "https://pt.wikipedia.org/wiki/Big_Brother_Brasil_24"         # aqui estamos criando uma variavel com a URL do site que irems coletar as tabelas
+tabelas = pd.read_html(url)                                         # utilizando um dos metodos do Pandas (read_html) iremos passar o a URL do site para o metodo encontrar as tabelas e passamos para uma variavel
+tabelas                                                             # aqui ele ira imprimir na tela o qu foi encontrato e as tabelas da paquinas estaram numeradas
+
+
+tabelas[8]                                                          #  aqui estamos imprimindo a tabela que escolhemos com o indice da mesma entre cochetes 
+
+
+data_frame = spark.createDataFrame(tabelas[8])                      # Aqui estamos criando um data frame que basicamente transformando a tabela que colhemos do site em uma estrutura 2D pronta para ser gravada em um end point 
+display(data_frame)                                                 # mostrando a estrutura ja em formato de tabela 
+
+
+data_frame.printSchema()                                            # mostrando o eschema que sera usado como estrutura do banco ao ser gravado 
+
+
+table_path = 'Tables/Participantes'                                 # aqui estamos definindo o local que sera gravado os dados coletado, neste exemplo estamos utilizando o lakehouse (Tables/Participantes) do Fabric que esta direamente conectado com meu Notebook por esta dentro do mesmo workspace
+data_frame.write.format("delta").mode("append").save(table_path)    # aqui estamos utilizando a função Write.format como o formato append para gravar os dados no destino que definimos na variavel acima
